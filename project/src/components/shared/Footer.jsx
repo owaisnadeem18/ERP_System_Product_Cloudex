@@ -1,27 +1,40 @@
 export default function Footer() {
-  // Automatically gets the current year
   const currentYear = new Date().getFullYear();
 
-  return (
-    <footer className="w-full bg-white border-tborder-gray-100 py-6 mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center justify-center space-y-2">
-          
-          {/* Main Text with Heart Animation */}
-          <p className="text-gray-500 text-sm font-medium flex items-center gap-2 tracking-wide">
-            Made with 
-            <span className="text-red-500 animate-pulse text-lg">❤️</span> 
-            by 
-            <span className="text-blue-600 font-bold hover:text-blue-700 transition-colors cursor-pointer">
-              Cloudex
-            </span>
-          </p>
+  // Official Brand Gradient
+  const brandGradient = "linear-gradient(45deg, #0C6263 0%, #0C925E 100%)";
 
-          {/* Dynamic Year Branding */}
-          <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-gray-400 font-semibold">
-            <span>© {currentYear} All Rights Reserved</span>
-            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-            <span>v1.0.4</span>
+  return (
+    <footer 
+      style={{ background: brandGradient }}
+      className="w-full py-8 mt-auto border-t border-white/10"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          
+          {/* Main Credits with Cloudex Branding */}
+          <div className="flex items-center gap-2 text-white/90 font-medium tracking-wide">
+            <span>Made with</span>
+            <span className="text-red-400 animate-pulse text-xl">❤️</span>
+            <span>by</span>
+            <span className="font-extrabold text-white tracking-tight text-lg group cursor-pointer">
+              CLOUDEX<span className="text-[#0C925E] group-hover:text-white transition-colors">.</span>
+            </span>
+          </div>
+
+          <div className="w-32 h-px bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
+
+          {/* Copyright & Technical Details */}
+          <div className="flex flex-wrap justify-center items-center gap-6 text-[10px] uppercase tracking-[0.3em] font-bold">
+            <span className="text-white/60">© {currentYear} CLOUDEX SOLUTIONS</span>
+            
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 bg-white/10 rounded border border-white/10 text-white/80">
+                v1.0.4
+              </span>
+            </div>
+            
+            <span className="text-white/60">All Rights Reserved</span>
           </div>
           
         </div>
