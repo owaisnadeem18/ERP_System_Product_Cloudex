@@ -46,13 +46,16 @@ const ForgotPassword = () => {
       
       {/* Header */}
       <div className="flex flex-col gap-2 items-center">
-        <Image 
-          src={cloudexSmallLogo} 
-          alt="CloudEx Logo" 
-          width={120} 
-          height={40} 
-          className="object-contain" 
-        />
+
+              <div className="p-0 bg-white/95 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl inline-flex items-center justify-center">
+            <Image 
+              src={cloudexSmallLogo} 
+              alt="CloudEx Logo" 
+              width={120} 
+              height={40} 
+              className="object-cover" 
+            />
+          </div>
         <h2 className="text-3xl font-bold text-center text-white mt-2">
           Forgot Password
         </h2>

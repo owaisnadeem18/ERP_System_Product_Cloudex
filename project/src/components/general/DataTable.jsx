@@ -65,7 +65,7 @@ export default function DataTable({ columns, data }) {
       </div>
 
       {/* Professional Pagination Footer */}
-      <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between">
+      <div className="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between sm:flex-row flex-col gap-3">
         <span className="text-xs font-semibold text-gray-500">
           Showing <span className="text-gray-900">{startIndex + 1}</span> to <span className="text-gray-900">{Math.min(startIndex + itemsPerPage, data.length)}</span> of <span className="text-gray-900">{data.length}</span> entries
         </span>

@@ -69,7 +69,16 @@ const Login = () => {
       >
         <div className="flex flex-col gap-2 items-center" >
 
-      <Image src={cloudexSmallLogo} alt="CloudEx Logo" className="w-30" />
+        <div className="p-0 bg-white/95 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl inline-flex items-center justify-center">
+    <Image 
+      src={cloudexSmallLogo} 
+      alt="CloudEx Logo" 
+      width={120} 
+      height={40} 
+      className="object-cover" 
+    />
+  </div>
+
         {/* Title */}
         <h2 className="text-3xl font-bold text-center md:text-text-secondary text-white">
           Sign In
