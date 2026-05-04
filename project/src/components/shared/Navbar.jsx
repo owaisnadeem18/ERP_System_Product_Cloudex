@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Image from 'next/image';
-import { cloudexBigLogo } from '@/app/assets';
+import { cloudexBigLogo } from '@/assets';
 import { User } from 'lucide-react';
 
 export default function Navbar() {
@@ -161,9 +161,9 @@ export default function Navbar() {
                     <Link href="/admin/profile" className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">My Profile</Link>
                     <Link href="/admin/settings" className="block px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">Account Settings</Link>
                     <hr className="my-2 border-gray-50" />
-                    <button className="w-full text-left px-4 py-2 text-sm text-red-600 font-semibold hover:bg-red-50 transition-colors">
+                    <Link href="/login" className="w-full text-left px-4 py-2 text-sm text-red-600 font-semibold hover:bg-red-50 transition-colors">
                       Logout
-                    </button>
+                    </Link>
                   </div>
                 </>
               )}
