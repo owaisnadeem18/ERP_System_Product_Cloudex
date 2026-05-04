@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Edit3, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
-export default function DataTable({ columns, data, rowConfig }) {
+// 1. onDelete prop ko add kiya
+export default function DataTable({ columns, data, rowConfig, onDelete }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -13,6 +14,7 @@ export default function DataTable({ columns, data, rowConfig }) {
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
+  
   const currentData = data.slice(startIndex, startIndex + itemsPerPage);
 
   return (
@@ -38,25 +40,19 @@ export default function DataTable({ columns, data, rowConfig }) {
                 currentData.map((row, rowIndex) => (
                   <tr key={rowIndex} className="hover:bg-[#0C6263]/5 transition-all duration-200 group">
                     {columns.map((col) => (
-
                       <td key={col} className="px-6 py-4 text-sm text-gray-700">
                         {(() => {
                           if (rowConfig && rowConfig[col]) {
                             return rowConfig[col](row);
                           }
-
                           const searchKey = col.toLowerCase().replace(/ /g, "");
-
                           const actualKey = Object.keys(row).find(
                             (key) => key.toLowerCase() === searchKey
                           );
-
                           const value = actualKey !== undefined ? row[actualKey] : row[col];
-
                           return value ?? "-";
                         })()}
                       </td>
-
                     ))}
 
                     <td className="px-6 py-4 text-right">
@@ -64,7 +60,11 @@ export default function DataTable({ columns, data, rowConfig }) {
                         <button className="p-2 text-gray-400 hover:text-[#0C6263] hover:bg-[#0C6263]/10 rounded-lg transition-all">
                           <Edit3 size={16} />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
+                        <button 
+                          // 2. Local logic ki bajaye parent ka function call kiya
+                          onClick={() => onDelete && onDelete(row)} 
+                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -83,7 +83,7 @@ export default function DataTable({ columns, data, rowConfig }) {
         </div>
       </div>
 
-      {/* Pagination Section */}
+      {/* Pagination rendering... (Keep as is) */}
       <div className="px-2 flex items-center justify-between sm:flex-row flex-col gap-3">
         <span className="text-xs font-semibold text-gray-500">
           Showing <span className="text-gray-900">{data.length > 0 ? startIndex + 1 : 0}</span> to <span className="text-gray-900">{Math.min(startIndex + itemsPerPage, data.length)}</span> of <span className="text-gray-900">{data.length}</span> entries

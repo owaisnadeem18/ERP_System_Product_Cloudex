@@ -4,12 +4,17 @@ import DataTable from "@/components/general/DataTable";
 import Button from "@/components/ui/Button";
 import { Plus, Search, Package, CheckCircle2, AlertCircle } from "lucide-react";
 import { productsData } from '@/lib/data/productData';
+import ProductModal from '@/components/modal/ProductModal';
+import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 
 const ProductMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [data, setData] = useState(productsData);
   
-  const filteredData = productsData.filter((product) => {
+  const filteredData = data.filter((product) => {
       const searchStr = searchQuery.toLowerCase();
     return (
         product.name.toLowerCase().includes(searchStr) ||
@@ -17,6 +22,21 @@ const ProductMaster = () => {
       product.barcode.includes(searchStr)
     );
   });
+
+
+  const openDeleteDialog = (row) => {
+    setItemToDelete(row);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (itemToDelete) {
+      const updatedData = data.filter((item) => item.id !== itemToDelete.id);
+      setData(updatedData);
+      setIsDeleteModalOpen(false);
+      setItemToDelete(null);
+    }
+  };
 
     const columns = ["ID", "Name", "Barcode", "Price", "Is Tax Applicable", "Quantity", "Status"];
 
@@ -36,6 +56,18 @@ const rowConfig = {
   return (
     <div className="page-container flex flex-col gap-8 animate-in fade-in duration-500">
 
+      <ProductModal
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        itemName={itemToDelete?.name || "this item"}
+      />
+
       {/* 1. Page Heading */}
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div className="space-y-1">
@@ -51,7 +83,7 @@ const rowConfig = {
         <div className="section flex justify-between items-center p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
           <div className="flex flex-col">
             <span className="text-muted text-xs font-semibold uppercase tracking-wider">Total Products</span>
-            <span className="text-2xl font-bold text-[#0C6263]">{productsData.length}</span>
+            <span className="text-2xl font-bold text-[#0C6263]">{data.length}</span>
           </div>
           <Package className="text-[#0C6263]/20" size={32} />
         </div>
@@ -60,7 +92,7 @@ const rowConfig = {
           <div className="flex flex-col">
             <span className="text-muted text-xs font-semibold uppercase tracking-wider">In Stock</span>
             <span className="text-2xl font-bold text-green-600">
-              {productsData.filter((p) => p.quantity > 0).length}
+              {data.filter((p) => p.quantity > 0).length}
             </span>
           </div>
           <CheckCircle2 className="text-green-600/20" size={32} />
@@ -70,7 +102,7 @@ const rowConfig = {
           <div className="flex flex-col">
             <span className="text-muted text-xs font-semibold uppercase tracking-wider">Out of Stock</span>
             <span className="text-2xl font-bold text-red-500">
-              {productsData.filter((p) => p.quantity === 0).length}
+              {data.filter((p) => p.quantity === 0).length}
             </span>
           </div>
           <AlertCircle className="text-red-500/20" size={32} />
@@ -93,11 +125,11 @@ const rowConfig = {
             />
           </div>
           
-          <Button icon={Plus} text="Add Product" className="font-bold shadow-md" />
+          <Button icon={Plus} text="Add Product" className="font-bold shadow-md" onClick={() => setIsModalOpen(true)} />
         </div> 
 
         {/* 4. Data Table Container */}
-          <DataTable columns={columns} data={filteredData} rowConfig={rowConfig} />
+          <DataTable columns={columns} data={filteredData} rowConfig={rowConfig} onDelete={openDeleteDialog} />
         
       </div>
 
