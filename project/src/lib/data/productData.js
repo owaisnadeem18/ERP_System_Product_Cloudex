@@ -1,0 +1,65 @@
+export const productsData = [
+  {
+    id: "PROD-001",
+    name: "Wireless Mouse M185",
+    barcode: "692134560012",
+    price: 1200.00,
+    isTaxApplicable: "Yes",
+    quantity: 45,
+    status: 1, // Active
+  },
+  {
+    id: "PROD-002",
+    name: "Mechanical Keyboard RGB",
+    barcode: "692134560045",
+    price: 4500.00,
+    isTaxApplicable: "Yes",
+    quantity: 12,
+    status: 1,
+  },
+  {
+    id: "PROD-003",
+    name: "USB-C Charging Cable",
+    barcode: "692134560089",
+    price: 350.00,
+    isTaxApplicable: "No",
+    quantity: 0,
+    status: 0, // Inactive / Out of stock
+  },
+  {
+    id: "PROD-004",
+    name: "Dell 24-inch Monitor",
+    barcode: "692134560112",
+    price: 28500.00,
+    isTaxApplicable: "Yes",
+    quantity: 8,
+    status: 1,
+  },
+  {
+    id: "PROD-005",
+    name: "Laptop Stand Aluminum",
+    barcode: "692134560223",
+    price: 2200.00,
+    isTaxApplicable: "No",
+    quantity: 25,
+    status: 1,
+  },
+  {
+    id: "PROD-006",
+    name: "Webcam Full HD 1080p",
+    barcode: "692134560334",
+    price: 3800.00,
+    isTaxApplicable: "Yes",
+    quantity: 15,
+    status: 1,
+  },
+  {
+    id: "PROD-007",
+    name: "Bluetooth Headphones",
+    barcode: "692134560445",
+    price: 5500.00,
+    isTaxApplicable: "Yes",
+    quantity: 0,
+    status: 0,
+  }
+];

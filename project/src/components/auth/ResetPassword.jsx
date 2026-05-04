@@ -43,7 +43,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 items-center w-full max-w-md bg-white/10 border border-white/20 shadow-2xl rounded-2xl p-6 sm:p-8 backdrop-blur-md">
+    <div className="flex flex-col gap-6 items-center w-full max-w-md  border border-white/20 shadow-2xl rounded-2xl p-6 sm:p-8 ">
       
       {/* Header */}
       <div className="flex flex-col gap-2 items-center">

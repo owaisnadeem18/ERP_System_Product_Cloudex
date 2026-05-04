@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Input from "../ui/Input";
 import InputPassword from "../ui/InputPassword";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Button from "../ui/Button";
 // import useAuth from "../../hooks/useAuth";
 
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { cloudexBigLogo, cloudexSmallLogo } from "@/assets";
 import Image from "next/image";
+import Toggle from "../ui/Toggle";
 
 const Login = () => {
   // custom hook of useAuth():
@@ -29,7 +30,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    control,
   } = useForm({
     resolver: yupResolver(loginSchema),
     defaultValues: {
@@ -61,7 +62,7 @@ const Login = () => {
   return (
       
       <div
-        className="w-full flex flex-col gap-6 items-center max-w-md bg-white/10
+        className="w-full flex flex-col gap-6 items-center max-w-md 
   border border-white/20 sm:border-white/10
   shadow-2xl 
   rounded-2xl 
@@ -109,27 +110,32 @@ const Login = () => {
     error={errors.password}
   />
 
-  {/* Remember + Forgot Row */}
-  <div className="flex items-center justify-between text-sm">
-    
-    {/* Left - Remember Me */}
-    <label className="flex items-center gap-2 cursor-pointer">
-      <input
-        type="checkbox"
-        {...register("rememberMe")}
-        className="accent-blue-600"
+ {/* Remember + Forgot Row */}
+<div className="flex items-center justify-between text-sm">
+
+  {/* 🔹 Remember Me (Using Toggle Component) */}
+  <Controller
+    name="rememberMe"
+    control={control}
+    defaultValue={false}
+    render={({ field }) => (
+      <Toggle
+        label="Remember me"
+        checked={field.value}
+        onChange={field.onChange}
       />
-      <span className="text-white">Remember me</span>
-    </label>
+    )}
+  />
 
-    <Link
-  href="/forgot-password"
-  className="flex items-center text-white gap-1 cursor-pointer"
->
-  <span className = "hover:underline" >Forgot password?</span>
-</Link>
+  {/* 🔹 Forgot Password */}
+  <Link
+    href="/forgot-password"
+    className="text-white hover:underline transition font-medium"
+  >
+    Forgot password?
+  </Link>
 
-  </div>
+</div>
 
   <Button loading={loading} type="submit" text={"Sign In"} />
   

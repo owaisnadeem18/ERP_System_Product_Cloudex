@@ -1,16 +1,25 @@
+"use client";
+
 import DataTable from "@/components/general/DataTable";
 import Button from "@/components/ui/Button";
 import { customerData } from "@/lib/data/customersData";
 import { Plus, Users, Search } from "lucide-react";
+import { useState } from "react";
 
 export default function CustomerMaster() {
 
-  
+  const [searchQuery , setSearchQuery] = useState("")
+
+  const filteredData = customerData.filter((customer) => {
+    return (
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+    )
+  }) 
 
   const columns = ["ID", "Name", "Contact", "Status"];
 
   return (
-    <div className="page-container space-y-6 animate-in fade-in duration-500">
+    <div className="page-container flex flex-col gap-6 animate-in fade-in duration-500">
 
       <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
 
@@ -21,21 +30,6 @@ export default function CustomerMaster() {
           <p className="text-muted max-w-xl">
             Manage your customer database, track status, and maintain relationships efficiently.
           </p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex sm:items-center gap-3 sm:flex-row flex-col">
-
-          <div className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-xl focus-within:border-[#0C6263] transition">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search customer..."
-              className="bg-transparent outline-none text-sm w-40"
-            />
-          </div>
-
-          <Button icon={Plus} text="Add Customer" />
         </div>
 
       </div>
@@ -59,17 +53,35 @@ export default function CustomerMaster() {
 
       </div>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex justify-between flex-col gap-3">
 
-          <h3 className="heading-section">Customer List</h3>
+        {/* Actions */}
+        <div className="flex gap-3 flex-col-reverse sm:flex-row sm:justify-between w-full">
+
 
           
+          <div className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-xl focus-within:border-[#0C6263] transition">
+            <Search size={18} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search customer..."
+              className="bg-transparent outline-none text-sm w-40"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <Button icon={Plus} text="Add Customer" />
+        </div> 
+
+        <div>
+
+        <DataTable columns={columns} data={filteredData} />
 
 
         </div>
 
-        <DataTable columns={columns} data={customerData} />
 
+        </div>
 
     </div>
   );

@@ -35,7 +35,7 @@ export default function AuthLayout({ children }) {
 
         {/* Form Content: This renders your login/register page.js */}
         <div className="relative z-10 w-full">
-          <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#0C6263] to-[#0C925E] md:px-8 lg:px-4 sm:px-0">
+          <div className="min-h-screen flex items-center justify-center md:bg-linear-to-br md:from-[#0C6263] md:to-[#0C925E] md:px-8 lg:px-4 sm:px-0">
   {children}
 </div>
         </div>
