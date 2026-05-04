@@ -12,7 +12,7 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 
 // Validations & Assets
-import { forgotPasswordSchema, loginSchema } from "@/lib/validations"; // Ensure this schema has 'username' validation
+import { forgotPasswordSchema } from "@/lib/validations";
 import { cloudexSmallLogo } from "@/assets";
 
 const ForgotPassword = () => {
@@ -24,7 +24,7 @@ const ForgotPassword = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    // Using your existing validation logic
+    
     resolver: yupResolver(forgotPasswordSchema), 
     defaultValues: {
       username: "",
@@ -35,7 +35,6 @@ const ForgotPassword = () => {
     setLoading(true);
     console.log("Validated Data:", data);
 
-    // Simple delay for UX and then redirecting
     setTimeout(() => {
       setLoading(false);
       router.push("/reset-password");
