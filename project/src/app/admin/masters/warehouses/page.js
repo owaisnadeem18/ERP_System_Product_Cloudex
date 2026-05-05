@@ -8,6 +8,7 @@ import HeadingAndDescription from '@/components/general/HeadingAndDescription';
 import WarehouseModal from '@/components/modal/WarehouseModal';
 import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 import { warehouseData } from '@/lib/data/warehouseData';
+import DynamicEditModal from '@/components/modal/DynamicEditModal';
 
 const WarehouseMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -17,8 +18,44 @@ const WarehouseMaster = () => {
   const [isEditModalOpen , setIsEditModalOpen] = useState(false);
   
   const [warehouseToDelete , setWarehouseToDelete] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
   
   const columns = ["ID", "NAME", "LOCATION", "MANAGER", "STATUS"]
+
+  const warehouseFields = [
+  {
+    name: "name",
+    label: "Warehouse Name",
+    type: "text",
+    placeholder: "e.g. Main Karachi Warehouse",
+    icon: Warehouse,
+    required: true,
+  },
+  {
+    name: "location",
+    label: "Location / Address",
+    type: "text",
+    placeholder: "e.g. Korangi Industrial Area",
+    icon: MapPin,
+    required: true,
+  },
+  {
+    name: "manager",
+    label: "Manager Name",
+    type: "text",
+    placeholder: "Ahmed Khan",
+    icon: UserCheck,
+  },
+  {
+    name: "status",
+    label: "Status",
+    type: "select",
+    options: [
+      { label: "Active", value: 1 },
+      { label: "Inactive", value: 0 },
+    ],
+  },
+];
 
   const rowConfig = [
     { key: "id", className: "font-bold text-[#0C6263]" },
@@ -40,6 +77,11 @@ const WarehouseMaster = () => {
     setWarehouseToDelete(row)
   }
 
+  const openEditDialog = (row) => {
+  setItemToEdit(row); 
+  setIsEditModalOpen(true);
+};
+
   const handleConfirmDelete = (row) => {
 
     if (warehouseToDelete) {
@@ -52,12 +94,27 @@ const WarehouseMaster = () => {
 
   }
 
+  const handleUpdateWarehouse = (updatedRow) => {
+  const updatedData = data.map((w) => (w.id === updatedRow.id ? updatedRow : w));
+  setData(updatedData);
+  setIsEditModalOpen(false);
+};
+
   return (
     <div className="page-container flex flex-col gap-8 animate-in fade-in duration-500">
       
       <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
       <DeleteConfirmModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleConfirmDelete} itemName={warehouseToDelete?.name} />
+
+      <DynamicEditModal 
+      title="Edit Warehouse Info"
+      isOpen={isEditModalOpen} 
+      onClose={() => setIsEditModalOpen(false)} 
+      onSave={handleUpdateWarehouse}
+      initialData={itemToEdit} 
+      fields={warehouseFields} 
+      />
 
       <HeadingAndDescription description="Manage your storage locations, track regional hubs, and assign warehouse managers." title={"Warehouse Master"} />
 
@@ -115,7 +172,7 @@ const WarehouseMaster = () => {
             data={data} 
             rowConfig={rowConfig} 
             onDelete={openDeleteDialog} 
-            onEdit={() => {}} 
+            onEdit={openEditDialog}
         />
       </div>
     </div>

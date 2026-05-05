@@ -1,15 +1,11 @@
-import POSScreen from '@/components/POS/POSScreen'
 import React from 'react'
 
 const page = () => {
   return (
     <div className='page-container flex flex-col gap-4 animate-in fade-in duration-500'>
         <h2>
-            POS
+            Goods Receipt Notes
         </h2>
-
-        <POSScreen/>
-
     </div>
   )
 }

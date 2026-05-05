@@ -9,9 +9,11 @@ import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import HeadingAndDescription from '@/components/general/HeadingAndDescription';
 import DataStatsInfo from '@/components/general/DataStatsInfo';
+import DataTableActions from '@/components/general/DataTableActions';
 
 const ProductMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(5);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -27,6 +29,8 @@ const ProductMaster = () => {
       product.barcode.includes(searchStr)
     );
   });
+
+  const finalData = filteredData.slice(0, pageSize);
 
 
   const openDeleteDialog = (row) => {
@@ -154,24 +158,18 @@ const rowConfig = {
       {/* 3. Actions & Table Area */}
       <div className="flex flex-col gap-4">
         
-        {/* Search and Add Button Group */}
-        <div className="flex gap-3 flex-col-reverse sm:flex-row sm:justify-between w-full">
-          <div className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2.5 rounded-xl focus-within:border-[#0C6263] focus-within:ring-2 focus-within:ring-teal-500/10 transition-all shadow-sm w-full sm:w-80">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name or barcode..."
-              className="bg-transparent outline-none text-sm w-full"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <Button icon={Plus} text="Add Product" className="font-bold shadow-md" onClick={() => setIsModalOpen(true)} />
-        </div> 
+        <DataTableActions
+          onAddClick={() => setIsModalOpen(true)}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          addBtnText='Add Product'
+          placeholder='Search Products...'
+        />
 
         {/* 4. Data Table Container */}
-          <DataTable columns={columns} data={filteredData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={openEditDialog}  />
+          <DataTable columns={columns} data={finalData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={openEditDialog}  />
         
       </div>
 

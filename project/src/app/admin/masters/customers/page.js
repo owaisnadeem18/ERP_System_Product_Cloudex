@@ -2,6 +2,7 @@
 
 import DataStatsInfo from "@/components/general/DataStatsInfo";
 import DataTable from "@/components/general/DataTable";
+import DataTableActions from "@/components/general/DataTableActions";
 import HeadingAndDescription from "@/components/general/HeadingAndDescription";
 import CustomerModal from "@/components/modal/CustomerModal";
 import DeleteConfirmModal from "@/components/modal/DeleteConfirmModal";
@@ -13,12 +14,14 @@ import { useState } from "react";
 
 export default function CustomerMaster() {
 
-  const [searchQuery , setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("")
+  const [pageSize, setPageSize] = useState(5);
+
   const [data, setData] = useState(customerData);
-  
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
 
   const [customerToDelete, setCustomerToDelete] = useState(null);
@@ -29,7 +32,7 @@ export default function CustomerMaster() {
   const openDeleteDialog = (row) => {
     setCustomerToDelete(row)
     setIsDeleteModalOpen(true);
-  } 
+  }
 
   // Edit Functions:
 
@@ -49,42 +52,44 @@ export default function CustomerMaster() {
 
   const filteredData = data.filter((customer) => {
     return (
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) 
+      customer.name.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }) 
+  })
+
+  const finalData = filteredData.slice(0, pageSize);
 
   const handleUpdateCustomer = (updatedRow) => {
-  const formattedRow = {
-    ...updatedRow,
-    status: Number(updatedRow.status), 
-  };
+    const formattedRow = {
+      ...updatedRow,
+      status: Number(updatedRow.status),
+    };
 
-  setData(prev => prev.map(item => item.id === formattedRow.id ? formattedRow : item));
-  setIsEditModalOpen(false);
-  setCustomerToEdit(null);
-};
+    setData(prev => prev.map(item => item.id === formattedRow.id ? formattedRow : item));
+    setIsEditModalOpen(false);
+    setCustomerToEdit(null);
+  };
 
   const columns = ["ID", "Name", "Contact", "Status"];
 
   const customerFields = [
-  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Enter customer name' },
-  { name: 'contact', label: 'Contact Number', type: 'text', placeholder: '03xx-xxxxxxx' },
-  { name: 'email', label: 'Email Address', type: 'email', placeholder: 'example@gmail.com' },
-  { name: 'city', label: 'City', type: 'text', placeholder: 'Enter city' },
-  { 
-    name: 'status', 
-    label: 'Status', 
-    type: 'select', 
-    options: [
-      { label: 'Active', value: 1 },
-      { label: 'Inactive', value: 0 }
-    ] 
-  }
-];
+    { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Enter customer name' },
+    { name: 'contact', label: 'Contact Number', type: 'text', placeholder: '03xx-xxxxxxx' },
+    { name: 'email', label: 'Email Address', type: 'email', placeholder: 'example@gmail.com' },
+    { name: 'city', label: 'City', type: 'text', placeholder: 'Enter city' },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      options: [
+        { label: 'Active', value: 1 },
+        { label: 'Inactive', value: 0 }
+      ]
+    }
+  ];
 
   const rowConfig = {
     "Status": (row) => (
-      row.status === 1 
+      row.status === 1
         ? <span className="text-green-600 font-bold text-xs bg-green-50 px-2 py-1 rounded-md border border-green-100">● Active</span>
         : <span className="text-red-600 font-bold text-xs bg-red-50 px-2 py-1 rounded-md border border-red-100">● Inactive</span>
     )
@@ -99,7 +104,7 @@ export default function CustomerMaster() {
         onClose={() => setIsModalOpen(false)}
       />
 
-      <DeleteConfirmModal 
+      <DeleteConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
@@ -119,35 +124,30 @@ export default function CustomerMaster() {
 
       <DataStatsInfo title={"Total Customers"} totalLength={data.length} activeLength={data.filter((c) => c.status === 1).length} inactiveLength={data.filter((c) => c.status === 0).length} />
 
-        <div className="flex justify-between flex-col gap-3">
+      <div className="flex justify-between flex-col gap-3">
 
         {/* Actions */}
-        <div className="flex gap-3 flex-col-reverse sm:flex-row sm:justify-between w-full">
 
+        <DataTableActions
+          placeholder="Search Customers"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+          onAddClick={() => setIsModalOpen(true)}
+          setPageSize={setPageSize}
+          pageSize={pageSize}
+          addBtnText="Add Customer"
+        />
 
-          
-          <div className="flex items-center gap-2 bg-white border border-gray-200 px-3 py-2 rounded-xl focus-within:border-[#0C6263] transition">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search customer..."
-              className="bg-transparent outline-none text-sm w-40"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <Button icon={Plus} text="Add Customer" onClick={() => setIsModalOpen(true)} />
-        </div> 
 
         <div>
 
-        <DataTable columns={columns} data={filteredData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={openEditDialog} />
+          <DataTable columns={columns} data={finalData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={openEditDialog} />
 
 
         </div>
 
 
-        </div>
+      </div>
 
     </div>
   );
