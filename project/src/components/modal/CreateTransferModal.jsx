@@ -59,7 +59,7 @@ export default function CreateTransferModal({ isOpen, onClose, onSave }) {
       <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in duration-200">
         
         {/* Header */}
-        <div className="bg-gray-50 px-6 py-4 border-b flex justify-between items-center">
+        <div className="bg-gray-50 px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-[#0C6263]/10 rounded-lg">
                 <ArrowRightLeft size={18} className="text-[#0C6263]" />
@@ -141,7 +141,7 @@ export default function CreateTransferModal({ isOpen, onClose, onSave }) {
         </div>
 
         {/* Actions */}
-        <div className="px-6 py-4 bg-gray-50 border-t flex justify-end gap-3">
+        <div className="px-6 py-4 bg-gray-50 flex justify-end gap-3">
           <button
             onClick={onClose}
             className="px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
