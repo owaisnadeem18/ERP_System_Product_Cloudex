@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Edit3, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 // 1. onDelete prop ko add kiya
-export default function DataTable({ columns, data, rowConfig, onDelete }) {
+export default function DataTable({ columns, data, rowConfig, onDelete , onEdit }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -57,8 +57,11 @@ export default function DataTable({ columns, data, rowConfig, onDelete }) {
 
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end items-center gap-2">
-                        <button className="p-2 text-gray-400 hover:text-[#0C6263] hover:bg-[#0C6263]/10 rounded-lg transition-all">
-                          <Edit3 size={16} />
+                        <button 
+                          className="p-2 text-gray-400 hover:text-[#0C6263] hover:bg-[#0C6263]/10 rounded-lg transition-all"
+                          onClick={() => onEdit && onEdit(row)}
+                        >
+                          <Edit3 size={16}  />
                         </button>
                         <button 
                           // 2. Local logic ki bajaye parent ka function call kiya
