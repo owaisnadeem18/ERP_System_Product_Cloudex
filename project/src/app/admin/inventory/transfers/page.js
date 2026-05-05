@@ -1,13 +1,171 @@
-import React from 'react'
+"use client"
 
-const page = () => {
+import React, { useState } from 'react'
+import { inventoryTransfers } from '@/lib/data/inventoryTransfers'
+import DataStatsInfo from '@/components/general/DataStatsInfo'
+import HeadingAndDescription from '@/components/general/HeadingAndDescription'
+import DataTableActions from '@/components/general/DataTableActions'
+import DataTable from '@/components/general/DataTable'
+import CreateTransferModal from '@/components/modal/CreateTransferModal'
+import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
+import DynamicEditModal from '@/components/modal/DynamicEditModal'
+
+const InventoryTransfersPage = () => {
+  const [data, setData] = useState(inventoryTransfers);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen , setIsDeleteModalOpen] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+
+  const [itemToDelete, setItemToDelete] = useState(null);
+  const [itemToEdit, setItemToEdit] = useState(null);
+
+
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(5);
+
+  // Row configuration for colors/actions
+  const rowConfig = {
+    showEdit: true,
+    showDelete: true,
+  };
+
+  const formattedData = data.map(item => ({
+  transferid: item.transferNumber,
+  source: item.sourceWarehouse?.name || "-",
+  destination: item.destinationWarehouse?.name || "-",
+  items: item.itemsCount,
+  status: item.status,
+  date: item.transferDate,
+}));
+
+const openDeleteDialog = (row) => {
+  setIsDeleteModalOpen(true);
+  setItemToDelete(row);
+
+}
+
+const handleConfirmDelete = () => {
+  if (itemToDelete) {
+    const updatedData = data.filter((d) => d.transferNumber !== itemToDelete.transferid);
+    setData(updatedData);
+    setIsDeleteModalOpen(false);
+    setItemToDelete(null);
+  }
+}
+
+const openEditDialog = (row) => {
+  setIsEditModalOpen(true); 
+  setItemToEdit(row);
+}
+
+const handleUpdate = (updatedRow) => {
+  const formattedRow = {
+    ...updatedRow,
+    transferNumber: updatedRow.transferid,
+  }
+
+  setData(prev => prev.map(item => item.transferNumber === formattedRow.transferNumber ? formattedRow : item));
+  setIsEditModalOpen(false);
+  setItemToEdit(null);
+}
+
+  // Column Definitions
+
+  const columns = [
+  'Transfer ID',
+  'Source',
+  'Destination',
+  'Items',
+  'Status',
+  'Date',
+]; 
+
+const transferFields = [
+  { label: "Transfer ID", name: "transferid" },
+  { label: "Source", name: "source" },
+  { label: "Destination", name: "destination" },
+  { label: "Items", name: "items" },
+  { label: "Status", name: "status" },
+  { label: "Date", name: "date" },
+];
+
+const filteredData = formattedData.filter(item => {
   return (
-    <div className='page-container flex flex-col gap-4 animate-in fade-in duration-500'>
-        <h2>
-            Inventory Transfers
-        </h2>
+    item.transferid.toLowerCase().includes(searchQuery.toLowerCase()) ||  
+    item.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    item.destination.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+})
+
+const finalData = filteredData.slice(0, pageSize);
+
+  return (
+    <div className='page-container flex flex-col gap-6 animate-in fade-in duration-500'>
+
+      <CreateTransferModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} 
+      />
+
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        itemName={itemToDelete?.transferid || ""}
+      />
+
+      <DynamicEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        initialData={itemToEdit}
+        fields={transferFields}
+        onSave={handleUpdate}
+        title={itemToEdit ? `Edit Transfer #${itemToEdit.transferid}` : "Edit Transfer"}
+      />
+      
+      {/* 1. Heading Section */}
+      <HeadingAndDescription
+        title="Inventory Transfers" 
+        description="Monitor and manage stock movement between different warehouses and branches." 
+      />
+
+      {/* 2. Stats Section */}
+      <DataStatsInfo
+        title="Total Transfers" 
+        totalLength={data.length} 
+        activeLength={data.filter(t => t.status === "In-Transit").length} 
+        inactiveLength={data.filter(t => t.status === "Pending").length}        
+      />
+
+      <div className="flex justify-between flex-col gap-3">
+        
+        {/* 3. Actions Section (Search, Add, PageSize) */}
+        <DataTableActions 
+          placeholder="Search Transfer ID or Warehouse"
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onAddClick={() => setIsModalOpen(true)}
+          pageSize={pageSize}
+          setPageSize={setPageSize}
+          addBtnText="Create Transfer"
+        />
+
+        {/* 4. Data Table Section */}
+          <DataTable
+            columns={columns} 
+            data={finalData} 
+            rowConfig={rowConfig}
+            onEdit={openEditDialog}
+            onDelete={openDeleteDialog}
+          />
+        
+
+      </div>
     </div>
   )
 }
 
-export default page
+export default InventoryTransfersPage;

@@ -9,9 +9,11 @@ import WarehouseModal from '@/components/modal/WarehouseModal';
 import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 import { warehouseData } from '@/lib/data/warehouseData';
 import DynamicEditModal from '@/components/modal/DynamicEditModal';
+import DataTableActions from '@/components/general/DataTableActions';
 
 const WarehouseMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(5);
   const [data , setData] = useState(warehouseData);
   const [isModalOpen , setIsModalOpen] = useState(false);
   const [isDeleteModalOpen , setIsDeleteModalOpen] = useState(false);
@@ -100,6 +102,15 @@ const WarehouseMaster = () => {
   setIsEditModalOpen(false);
 };
 
+const filteredData = data.filter((warehouse) => {
+  return (
+    warehouse.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    warehouse.location.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+})
+
+const finalData = filteredData.slice(0, pageSize);
+
   return (
     <div className="page-container flex flex-col gap-8 animate-in fade-in duration-500">
       
@@ -151,25 +162,20 @@ const WarehouseMaster = () => {
 
       {/* 3. Actions & Table Area */}
       <div className="flex flex-col gap-4">
-        <div className="flex gap-3 flex-col-reverse sm:flex-row sm:justify-between w-full">
-          <div className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2.5 rounded-xl focus-within:border-[#0C6263] focus-within:ring-2 focus-within:ring-teal-500/10 transition-all shadow-sm w-full sm:w-80">
-            <Search size={18} className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name or location..."
-              className="bg-transparent outline-none text-sm w-full"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          
-          <Button icon={Plus} text="Add Warehouse" className="font-bold shadow-md" onClick={() => setIsModalOpen(true)}  />
-        </div> 
+        <DataTableActions
+          placeholder="Search by warehouse name or location"
+          setSearchQuery={setSearchQuery}
+          searchQuery={searchQuery}
+          onAddClick={() => setIsModalOpen(true)}
+          setPageSize={setPageSize}
+          pageSize={pageSize}
+          addBtnText="Add Warehouse"
+        />
 
         {/* 4. Data Table Container */}
         <DataTable 
             columns={columns} 
-            data={data} 
+            data={finalData} 
             rowConfig={rowConfig} 
             onDelete={openDeleteDialog} 
             onEdit={openEditDialog}
