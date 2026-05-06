@@ -3,6 +3,7 @@ import React from "react";
 const Input = ({
   type = "text",
   placeholder = " ",
+  isAuth = false,
   label ,
   register,
   name,
@@ -15,7 +16,7 @@ const Input = ({
       {label && (
         <label 
           htmlFor={name} 
-          className="text-sm md:text-text-secondary text-white font-medium"
+          className={`text-sm md:text-text-secondary ${isAuth ? "text-white" : "text-slate-900"}`}
         >
           {label}
         </label>

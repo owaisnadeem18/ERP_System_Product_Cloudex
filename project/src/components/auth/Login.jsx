@@ -96,6 +96,7 @@ const Login = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="w-full flex flex-col gap-4">
   
   <Input
+    isAuth = {true}
     name="username"
     placeholder="Enter username"
     label="Username"

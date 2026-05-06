@@ -9,16 +9,15 @@ import DataTable from '@/components/general/DataTable'
 import CreateTransferModal from '@/components/modal/CreateTransferModal'
 import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
 import DynamicEditModal from '@/components/modal/DynamicEditModal'
+import { confirmDelete } from '@/utils/confirmDelete'
 
 const InventoryTransfersPage = () => {
   const [data, setData] = useState(inventoryTransfers);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen , setIsDeleteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
 
-  const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
 
 
@@ -33,6 +32,7 @@ const InventoryTransfersPage = () => {
   };
 
   const formattedData = data.map(item => ({
+  id: item.id ,
   transferid: item.transferNumber,
   source: item.sourceWarehouse?.name || "-",
   destination: item.destinationWarehouse?.name || "-",
@@ -41,20 +41,17 @@ const InventoryTransfersPage = () => {
   date: item.transferDate,
 }));
 
-const openDeleteDialog = (row) => {
-  setIsDeleteModalOpen(true);
-  setItemToDelete(row);
+  const openDeleteDialog = (row) => {
+    confirmDelete({
+      item: row,
+      data,
+      setData,
+      key: "transferid",
+      entity: "Transfer"
+    });
+    console.log("Delete clicked for:", row);
+  };
 
-}
-
-const handleConfirmDelete = () => {
-  if (itemToDelete) {
-    const updatedData = data.filter((d) => d.transferNumber !== itemToDelete.transferid);
-    setData(updatedData);
-    setIsDeleteModalOpen(false);
-    setItemToDelete(null);
-  }
-}
 
 const openEditDialog = (row) => {
   setIsEditModalOpen(true); 
@@ -108,13 +105,6 @@ const finalData = filteredData.slice(0, pageSize);
       <CreateTransferModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)} 
-      />
-
-      <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        itemName={itemToDelete?.transferid || ""}
       />
 
       <DynamicEditModal

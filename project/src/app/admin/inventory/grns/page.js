@@ -9,6 +9,7 @@ import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
 import DynamicEditModal from '@/components/modal/DynamicEditModal'
 import { grnData } from '@/lib/data/grnData'
 import React, { useState } from 'react'
+import { confirmDelete } from '@/utils/confirmDelete'
 
 const page = () => {
 
@@ -17,14 +18,12 @@ const page = () => {
   const [pageSize, setPageSize] = useState(5)
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  const [itemToDelete, setItemToDelete] = useState(null)
   const [itemToEdit, setItemToEdit] = useState(null)
 
-  // ✅ Format data (IMPORTANT)
   const formattedData = data.map(item => ({
+    id: item.grnId,
     grnId: item.grnId,
     supplier: item.supplier,
     warehouse: item.warehouse?.name,
@@ -33,7 +32,6 @@ const page = () => {
     date: new Date(item.grnDate).toLocaleDateString(),
   }))
 
-  // ✅ Filter
   const filteredData = formattedData.filter(item =>
     (item.grnId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
     (item.supplier || "").toLowerCase().includes(searchQuery.toLowerCase())
@@ -41,7 +39,6 @@ const page = () => {
 
   const finalData = filteredData.slice(0, pageSize)
 
-  // ✅ Columns
   const columns = [
     "GRN ID",
     "Supplier",
@@ -57,22 +54,16 @@ const page = () => {
     showDelete: true,
   }
 
-  // ✅ Delete
-  const openDeleteDialog = (row) => {
-    setItemToDelete(row)
-    setIsDeleteModalOpen(true)
-  }
+const openDeleteDialog = (row) => {
+  confirmDelete({
+    item: row,
+    data,
+    setData,
+    key: "id",
+    entity: "GRN"
+  });
+};
 
-  const handleConfirmDelete = () => {
-    if (itemToDelete) {
-      const updated = data.filter(d => d.grnId !== itemToDelete.grnId)
-      setData(updated)
-      setIsDeleteModalOpen(false)
-      setItemToDelete(null)
-    }
-  }
-
-  // ✅ Edit (IMPORTANT → original data find karo)
   const openEditDialog = (row) => {
     const original = data.find(d => d.grnId === row.grnId)
     setItemToEdit(original)
@@ -89,7 +80,6 @@ const page = () => {
     setItemToEdit(null)
   }
 
-  // ✅ Fields for edit modal
   const grnFields = [
     { name: "supplier", label: "Supplier" },
     { name: "status", label: "Status", type: "select", options: [
@@ -106,14 +96,6 @@ const page = () => {
       <CreateGRNModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
-
-      {/* Delete Modal */}
-      <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        itemName={itemToDelete?.grnId || ""}
       />
 
       {/* Edit Modal */}

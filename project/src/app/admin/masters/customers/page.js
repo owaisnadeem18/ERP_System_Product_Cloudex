@@ -5,7 +5,6 @@ import DataTable from "@/components/general/DataTable";
 import DataTableActions from "@/components/general/DataTableActions";
 import HeadingAndDescription from "@/components/general/HeadingAndDescription";
 import CustomerModal from "@/components/modal/CustomerModal";
-import Swal from "sweetalert2";
 import DynamicEditModal from "@/components/modal/DynamicEditModal";
 import { customerData } from "@/lib/data/customersData";
 import { useState } from "react";
@@ -22,8 +21,23 @@ export default function CustomerMaster() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [customerToEdit, setCustomerToEdit] = useState(null);
 
-  // Delete Functions:
 
+  // function to add a new customer from popup modal:
+
+  const createCustomerObj = (formData) => {
+    return {
+      id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: formData.name,
+      contact: formData.contact,
+      email: formData.email,
+      city: formData.city,
+      status: Number(formData.status),
+    }
+
+  }
+
+
+  // Delete Functions:
   const openDeleteDialog = (row) => {
     confirmDelete({
       item: row,
@@ -87,6 +101,13 @@ export default function CustomerMaster() {
     )
   };
 
+
+  const handleAddCustomer = (formData) => {
+    const newCustomer = createCustomerObj(formData)
+    setData(prev => [newCustomer , ...prev]);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="page-container flex flex-col gap-6 animate-in fade-in duration-500">
 
@@ -94,6 +115,7 @@ export default function CustomerMaster() {
       <CustomerModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onSave={handleAddCustomer}
       />
 
       <DynamicEditModal

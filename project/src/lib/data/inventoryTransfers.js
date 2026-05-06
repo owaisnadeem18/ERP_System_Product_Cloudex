@@ -1,6 +1,6 @@
 export const inventoryTransfers = [
   {
-    _id: "trf_001",
+    id: "trf_001",
     transferNumber: "TRF-2026-001",
     sourceWarehouse: { id: "w1", name: "Main Warehouse (Karachi)" },
     destinationWarehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
@@ -12,7 +12,7 @@ export const inventoryTransfers = [
     priority: "High"
   },
   {
-    _id: "trf_002",
+    id: "trf_002",
     transferNumber: "TRF-2026-002",
     sourceWarehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
     destinationWarehouse: { id: "w1", name: "Main Warehouse (Karachi)" },
@@ -24,7 +24,7 @@ export const inventoryTransfers = [
     priority: "Medium"
   },
   {
-    _id: "trf_003",
+    id: "trf_003",
     transferNumber: "TRF-2026-003",
     sourceWarehouse: { id: "w3", name: "Islamabad Depot" },
     destinationWarehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
@@ -36,7 +36,7 @@ export const inventoryTransfers = [
     priority: "Low"
   },
   {
-    _id: "trf_004",
+    id: "trf_004",
     transferNumber: "TRF-2026-004",
     sourceWarehouse: { id: "w1", name: "Main Warehouse (Karachi)" },
     destinationWarehouse: { id: "w3", name: "Islamabad Depot" },
@@ -48,7 +48,7 @@ export const inventoryTransfers = [
     priority: "High"
   },
   {
-    _id: "trf_005",
+    id: "trf_005",
     transferNumber: "TRF-2026-005",
     sourceWarehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
     destinationWarehouse: { id: "w3", name: "Islamabad Depot" },

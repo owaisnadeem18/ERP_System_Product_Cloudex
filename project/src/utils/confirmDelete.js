@@ -16,6 +16,12 @@ export const confirmDelete = ({ item, data, setData, key = "name", entity = "Ite
       const updatedData = data.filter((d) => d.id !== item.id);
       setData(updatedData);
 
+      const localProducts = JSON.parse(localStorage.getItem('products') || "[]");
+      
+      const updatedLocalProducts = localProducts.filter((p) => p.id !== item.id);
+      
+      localStorage.setItem('products', JSON.stringify(updatedLocalProducts));
+
       Swal.fire({
         title: "Deleted!",
         text: `${entity} has been removed successfully.`,

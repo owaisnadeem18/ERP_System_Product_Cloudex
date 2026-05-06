@@ -70,6 +70,7 @@ const ForgotPassword = () => {
         <Input
           name="username"
           label="Username"
+          isAuth = {true}
           placeholder="Enter username"
           register={register}
           error={errors.username}

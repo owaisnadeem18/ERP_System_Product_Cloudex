@@ -55,6 +55,7 @@ const page = () => {
   }
 
 const formattedData = data.map(item => ({
+  id: item.id ,
   adjustmentId: item.adjustmentId,
   warehouse: item.warehouse?.name,
   product: item.product?.name,

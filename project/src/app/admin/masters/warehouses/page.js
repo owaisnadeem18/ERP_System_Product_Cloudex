@@ -20,6 +20,22 @@ const WarehouseMaster = () => {
   const [isEditModalOpen , setIsEditModalOpen] = useState(false);
 
   const [itemToEdit , setItemToEdit] = useState(null);
+
+  const createWarehouseObj = (formData) => {
+    return {
+        id: formData.id || `WH-${Math.floor(1000 + Math.random() * 9000)}`,
+      name: formData.name,
+    location: formData.location,
+    manager: formData.manager,
+    status: Number(formData.status),
+    }
+  }
+
+  const handleAddWarehouse = (formData) => {
+    const newWareHouse = createWarehouseObj(formData)
+    setData(prev => [newWareHouse , ...prev])
+    setIsModalOpen(false)
+  }
   
   const columns = ["ID", "NAME", "LOCATION", "MANAGER", "STATUS"]
 
@@ -71,7 +87,7 @@ const WarehouseMaster = () => {
         0: { text: "Inactive", className: "bg-red-100 text-red-500" } 
       } 
     }
-  ];
+  ]
 
   const openDeleteDialog = (row) => {
     confirmDelete({
@@ -107,7 +123,7 @@ const finalData = filteredData.slice(0, pageSize);
   return (
     <div className="page-container flex flex-col gap-8 animate-in fade-in duration-500">
       
-      <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddWarehouse} />
 
 
       <DynamicEditModal 
