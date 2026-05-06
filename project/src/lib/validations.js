@@ -90,9 +90,6 @@ export const warehouseSchema = yup.object().shape({
   name: yup.string().required("Warehouse name is required").min(3, "Min 3 characters"),
   location: yup.string().required("Location is required"),
   manager: yup.string().required("Manager name is required"),
-  phone: yup
-    .string()
-    .required("Contact number is required")
-    .matches(/^[0-9-]+$/, "Invalid phone number"),
+  contact: yup.string().required("Contact number is required").matches(/^[0-9-]+$/, "Invalid phone number"),
   status: yup.string().required("Status is required"),
 });

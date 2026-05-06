@@ -2,12 +2,12 @@
 import React, { useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { productSchema } from '@/lib/validations';
+import { customerSchema } from '@/lib/validations';
 import { Package, Barcode, DollarSign, Box } from "lucide-react";
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 
-const ProductForm = ({ initialData, onSave, onCancel }) => {
+const CustomerForm = ({ initialData, onSave, onCancel }) => {
   const isEditMode = !!initialData;
 
   const {
@@ -16,13 +16,14 @@ const ProductForm = ({ initialData, onSave, onCancel }) => {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(productSchema),
+    resolver: yupResolver(customerSchema),
     defaultValues: {
       name: "",
-      barcode: "",
-      price: "",
-      quantity: "",
+      contact: "",
+      email: "",
+      city: "",
       isTaxApplicable: "Yes",
+      status: "1",
     }
   });
 
@@ -36,16 +37,13 @@ const ProductForm = ({ initialData, onSave, onCancel }) => {
   }, [initialData, reset]);
 
   const onSubmit = (formData) => {
-    const finalProduct = {
+    const finalCustomer = {
       ...formData,
-      id: initialData?.id || `PROD-${Math.floor(1000 + Math.random() * 9000)}`,
-      price: Number(formData.price),
-      quantity: Number(formData.quantity),
-      isTaxApplicable: formData.isTaxApplicable === "Yes",
+      id: initialData?.id || `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
       status: initialData?.status || 1,
     };
     
-    onSave(finalProduct);
+    onSave(finalCustomer);
   };
 
   return (
@@ -53,51 +51,51 @@ const ProductForm = ({ initialData, onSave, onCancel }) => {
       {/* Form Header */}
       <div className="sm:px-6 px-4 md:px-8 py-6 border-b border-gray-50 bg-slate-50/50">
         <h3 className="text-xl font-bold text-slate-800">
-          {isEditMode ? "Update Product Information" : "Create New Product"}
+          {isEditMode ? "Update Customer Information" : "Create New Customer"}
         </h3>
         <p className="text-sm text-slate-500 mt-1">
-          {isEditMode ? "Modify the existing product details below." : "Fill in the details to add a new product to your inventory."}
+          {isEditMode ? "Modify the existing customer details below." : "Fill in the details to add a new customer to your database."}
         </p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="sm:p-6 p-4 md:p-8  space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Input 
-            label="Product Name"
+            label="Customer Name"
             name="name"
             register={register}
-            placeholder="e.g. Wireless Mouse"
+            placeholder="e.g. John Doe"
             error={errors.name}
             icon={Package}
           />
           
           <Input 
-            label="Barcode / SKU"
-            name="barcode"
+            label="Contact Number"
+            name="contact"
             register={register}
-            placeholder="12345678"
-            error={errors.barcode}
+            placeholder="e.g. 03001234567"
+            error={errors.contact}
             icon={Barcode}
           />
 
           <Input 
-            label="Unit Price (Rs.)"
-            type="number"
-            name="price"
+            label="Email Address"
+            type="email"
+            name="email"
             register={register}
-            placeholder="0.00"
-            error={errors.price}
+            placeholder="e.g. john.doe@example.com"
+            error={errors.email}
             icon={DollarSign}
           />
 
           <Input 
-            label="Initial Quantity"
-            type="number"
-            name="quantity"
+            label="City"
+            name="city"
             register={register}
-            placeholder="0"
-            error={errors.quantity}
+            placeholder="e.g. Karachi"
+            error={errors.city}
             icon={Box}
+
           />
 
           {/* Select Field for Tax */}
@@ -130,7 +128,7 @@ const ProductForm = ({ initialData, onSave, onCancel }) => {
           
           <Button 
             type="submit"
-            text={isEditMode ? "Update Product" : "Save Product"} 
+            text={isEditMode ? "Update Customer" : "Save Customer"} 
             className="px-10 py-2.5 shadow-xl shadow-teal-900/10" 
           />
         </div>
@@ -139,4 +137,4 @@ const ProductForm = ({ initialData, onSave, onCancel }) => {
   );
 };
 
-export default ProductForm;
+export default CustomerForm;

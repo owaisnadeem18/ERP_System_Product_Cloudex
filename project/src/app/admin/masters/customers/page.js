@@ -7,33 +7,57 @@ import HeadingAndDescription from "@/components/general/HeadingAndDescription";
 import CustomerModal from "@/components/modal/CustomerModal";
 import DynamicEditModal from "@/components/modal/DynamicEditModal";
 import { customerData } from "@/lib/data/customersData";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { confirmDelete } from "@/utils/confirmDelete";
+import { useRouter } from "next/navigation";
 
 export default function CustomerMaster() {
+
+  const router = useRouter()
 
   const [searchQuery, setSearchQuery] = useState("")
   const [pageSize, setPageSize] = useState(5);
 
   const [data, setData] = useState(customerData);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [customerToEdit, setCustomerToEdit] = useState(null);
+  useEffect(() => {
+    const savedData = localStorage.getItem('customers'); 
+  
+  if (savedData) {
+    const parsedLocal = JSON.parse(savedData);
+    
+    const combinedData = [
+      ...parsedLocal,
+      ...customerData.filter(mockItem => 
+        !parsedLocal.some(localItem => localItem.id === mockItem.id)
+      )
+    ];
+    
+    setData(combinedData);
+  }
+}, []);
+
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [customerToEdit, setCustomerToEdit] = useState(null);
 
 
   // function to add a new customer from popup modal:
 
-  const createCustomerObj = (formData) => {
-    return {
-      id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
-      name: formData.name,
-      contact: formData.contact,
-      email: formData.email,
-      city: formData.city,
-      status: Number(formData.status),
-    }
+  // const createCustomerObj = (formData) => {
+  //   return {
+  //     id: `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
+  //     name: formData.name,
+  //     contact: formData.contact,
+  //     email: formData.email,
+  //     city: formData.city,
+  //     status: Number(formData.status),
+  //   }
 
+  // }
+
+  const handleAddRedirect = () => {
+    router.push("/admin/masters/customers/add")
   }
 
 
@@ -50,10 +74,10 @@ export default function CustomerMaster() {
 
   // Edit Functions:
 
-  const openEditDialog = (row) => {
-    setCustomerToEdit(row);
-    setIsEditModalOpen(true);
-  }
+  // const openEditDialog = (row) => {
+  //   setCustomerToEdit(row);
+  //   setIsEditModalOpen(true);
+  // }
 
 
   const filteredData = data.filter((customer) => {
@@ -73,6 +97,10 @@ export default function CustomerMaster() {
     setData(prev => prev.map(item => item.id === formattedRow.id ? formattedRow : item));
     setIsEditModalOpen(false);
     setCustomerToEdit(null);
+  };
+
+  const handleEditRedirect = (row) => {
+    router.push(`/admin/masters/customers/edit/${row.id}`);
   };
 
   const columns = ["ID", "Name", "Contact", "Status"];
@@ -102,22 +130,22 @@ export default function CustomerMaster() {
   };
 
 
-  const handleAddCustomer = (formData) => {
-    const newCustomer = createCustomerObj(formData)
-    setData(prev => [newCustomer , ...prev]);
-    setIsModalOpen(false);
-  };
+  // const handleAddCustomer = (formData) => {
+  //   const newCustomer = createCustomerObj(formData)
+  //   setData(prev => [newCustomer , ...prev]);
+  //   setIsModalOpen(false);
+  // };
 
   return (
     <div className="page-container flex flex-col gap-6 animate-in fade-in duration-500">
 
 
-      <CustomerModal
+      {/* <CustomerModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddCustomer}
-      />
-
+      /> */}
+{/* 
       <DynamicEditModal
         title="Edit Customer Info"
         isOpen={isEditModalOpen}
@@ -125,7 +153,7 @@ export default function CustomerMaster() {
         onSave={handleUpdateCustomer}
         initialData={customerToEdit}
         fields={customerFields}
-      />
+      /> */}
 
       <HeadingAndDescription title={"Customer Master"} description={"Manage your customer database, track status, and maintain relationships efficiently."} />
 
@@ -139,7 +167,7 @@ export default function CustomerMaster() {
           placeholder="Search Customers"
           setSearchQuery={setSearchQuery}
           searchQuery={searchQuery}
-          onAddClick={() => setIsModalOpen(true)}
+          onAddClick={handleAddRedirect}
           setPageSize={setPageSize}
           pageSize={pageSize}
           addBtnText="Add Customer"
@@ -148,7 +176,7 @@ export default function CustomerMaster() {
 
         <div>
 
-          <DataTable columns={columns} data={finalData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={openEditDialog} />
+          <DataTable columns={columns} data={finalData} rowConfig={rowConfig} onDelete={openDeleteDialog} onEdit={handleEditRedirect} />
 
 
         </div>

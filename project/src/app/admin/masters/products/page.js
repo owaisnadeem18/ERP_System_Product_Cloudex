@@ -18,8 +18,8 @@ const ProductMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
   // const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState(null);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [itemToEdit, setItemToEdit] = useState(null);
   const [data, setData] = useState(productsData);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Package, Search, Plus, MapPin, Warehouse, UserCheck } from 'lucide-react'
 
 import DataTable from '@/components/general/DataTable';
@@ -11,30 +11,57 @@ import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import DataTableActions from '@/components/general/DataTableActions';
 import Swal from 'sweetalert2';
 import { confirmDelete } from '@/utils/confirmDelete';
+import { useRouter } from 'next/navigation';
 
 const WarehouseMaster = () => {
+
+  const router = useRouter();
+
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [data , setData] = useState(warehouseData);
-  const [isModalOpen , setIsModalOpen] = useState(false);
-  const [isEditModalOpen , setIsEditModalOpen] = useState(false);
+  // const [isModalOpen , setIsModalOpen] = useState(false);
+  // const [isEditModalOpen , setIsEditModalOpen] = useState(false);
 
-  const [itemToEdit , setItemToEdit] = useState(null);
-
-  const createWarehouseObj = (formData) => {
-    return {
-        id: formData.id || `WH-${Math.floor(1000 + Math.random() * 9000)}`,
-      name: formData.name,
-    location: formData.location,
-    manager: formData.manager,
-    status: Number(formData.status),
+   useEffect(() => {
+    const savedData = localStorage.getItem('warehouses');
+    if (savedData) {
+      const parsedLocal = JSON.parse(savedData);
+      
+      const uniqueData = [
+        ...parsedLocal,
+        ...warehouseData.filter(mockItem => !parsedLocal.some(localItem => localItem.id === mockItem.id))
+      ];
+      
+      setData(uniqueData);
     }
+  }, []);
+  
+
+  // const [itemToEdit , setItemToEdit] = useState(null);
+
+  // const createWarehouseObj = (formData) => {
+  //   return {
+  //       id: formData.id || `WH-${Math.floor(1000 + Math.random() * 9000)}`,
+  //     name: formData.name,
+  //   location: formData.location,
+  //   manager: formData.manager,
+  //   status: Number(formData.status),
+  //   }
+  // }
+
+  // const handleAddWarehouse = (formData) => {
+  //   const newWareHouse = createWarehouseObj(formData)
+  //   setData(prev => [newWareHouse , ...prev])
+  //   setIsModalOpen(false)
+  // }
+
+  const handleAddRedirect = () => {
+    router.push("/admin/masters/warehouses/add")
   }
 
-  const handleAddWarehouse = (formData) => {
-    const newWareHouse = createWarehouseObj(formData)
-    setData(prev => [newWareHouse , ...prev])
-    setIsModalOpen(false)
+  const handleEditRedirect = (row) => {
+    router.push(`/admin/masters/warehouses/edit/${row.id}`)
   }
   
   const columns = ["ID", "NAME", "LOCATION", "MANAGER", "STATUS"]
@@ -99,17 +126,17 @@ const WarehouseMaster = () => {
     });
   };
 
-  const openEditDialog = (row) => {
-  setItemToEdit(row); 
-  setIsEditModalOpen(true);
-};
+//   const openEditDialog = (row) => {
+//   setItemToEdit(row); 
+//   setIsEditModalOpen(true);
+// };
 
 
-  const handleUpdateWarehouse = (updatedRow) => {
-  const updatedData = data.map((w) => (w.id === updatedRow.id ? updatedRow : w));
-  setData(updatedData);
-  setIsEditModalOpen(false);
-};
+//   const handleUpdateWarehouse = (updatedRow) => {
+//   const updatedData = data.map((w) => (w.id === updatedRow.id ? updatedRow : w));
+//   setData(updatedData);
+//   setIsEditModalOpen(false);
+// };
 
 const filteredData = data.filter((warehouse) => {
   return (
@@ -123,17 +150,17 @@ const finalData = filteredData.slice(0, pageSize);
   return (
     <div className="page-container flex flex-col gap-8 animate-in fade-in duration-500">
       
-      <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddWarehouse} />
+      {/* <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddWarehouse} /> */}
 
 
-      <DynamicEditModal 
+      {/* <DynamicEditModal 
       title="Edit Warehouse Info"
       isOpen={isEditModalOpen} 
       onClose={() => setIsEditModalOpen(false)} 
       onSave={handleUpdateWarehouse}
       initialData={itemToEdit} 
       fields={warehouseFields} 
-      />
+      /> */}
 
       <HeadingAndDescription description="Manage your storage locations, track regional hubs, and assign warehouse managers." title={"Warehouse Master"} />
 
@@ -174,7 +201,7 @@ const finalData = filteredData.slice(0, pageSize);
           placeholder="Search by warehouse name or location"
           setSearchQuery={setSearchQuery}
           searchQuery={searchQuery}
-          onAddClick={() => setIsModalOpen(true)}
+          onAddClick={handleAddRedirect}
           setPageSize={setPageSize}
           pageSize={pageSize}
           addBtnText="Add Warehouse"
@@ -186,7 +213,7 @@ const finalData = filteredData.slice(0, pageSize);
             data={finalData} 
             rowConfig={rowConfig} 
             onDelete={openDeleteDialog} 
-            onEdit={openEditDialog}
+            onEdit={handleEditRedirect}
         />
       </div>
     </div>
