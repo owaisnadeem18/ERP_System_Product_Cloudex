@@ -93,3 +93,18 @@ export const warehouseSchema = yup.object().shape({
   contact: yup.string().required("Contact number is required").matches(/^[0-9-]+$/, "Invalid phone number"),
   status: yup.string().required("Status is required"),
 });
+
+export const transferSchema = yup.object().shape({
+  transferDate: yup.date().required("Transfer date is required"),
+  fromWarehouse: yup.string().required("Source warehouse is required"),
+  toWarehouse: yup.string()
+    .required("Destination warehouse is required")
+    .notOneOf([yup.ref('fromWarehouse')], "Source and Destination cannot be the same"),
+  itemDetails: yup.string().required("Item details are required"),
+  quantity: yup
+    .number()
+    .typeError("Quantity must be a number")
+    .required("Quantity is required")
+    .min(1, "Quantity must be at least 1"),
+  remarks: yup.string().nullable(),
+});

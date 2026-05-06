@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { inventoryTransfers } from '@/lib/data/inventoryTransfers'
 import DataStatsInfo from '@/components/general/DataStatsInfo'
 import HeadingAndDescription from '@/components/general/HeadingAndDescription'
@@ -10,20 +10,53 @@ import CreateTransferModal from '@/components/modal/CreateTransferModal'
 import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
 import DynamicEditModal from '@/components/modal/DynamicEditModal'
 import { confirmDelete } from '@/utils/confirmDelete'
+import { useRouter } from 'next/navigation'
 
 const InventoryTransfersPage = () => {
+
+  const router = useRouter()
+
+
+
   const [data, setData] = useState(inventoryTransfers);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
 
-  const [itemToEdit, setItemToEdit] = useState(null);
+  // const [itemToEdit, setItemToEdit] = useState(null);
 
 
 
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
+
+
+   useEffect(() => {
+    const savedData = localStorage.getItem('transfers'); 
+  
+  if (savedData) {
+    const parsedLocal = JSON.parse(savedData);
+    
+    const combinedData = [
+      ...parsedLocal,
+      ...inventoryTransfers.filter(mockItem => 
+        !parsedLocal.some(localItem => localItem.id === mockItem.id)
+      )
+    ];
+    
+    setData(combinedData);
+  }
+}, []);
+
+  const handleAddRedirect = () => {
+    router.push('/admin/inventory/transfers/add');
+  };
+
+  const handleEditRedirect = (row) => {
+    router.push(`/admin/inventory/transfers/edit/${row.transferid}`);
+    console.log("Edit clicked for:", row);
+  }
 
   // Row configuration for colors/actions
   const rowConfig = {
@@ -41,6 +74,9 @@ const InventoryTransfersPage = () => {
   date: item.transferDate,
 }));
 
+
+
+
   const openDeleteDialog = (row) => {
     confirmDelete({
       item: row,
@@ -53,21 +89,21 @@ const InventoryTransfersPage = () => {
   };
 
 
-const openEditDialog = (row) => {
-  setIsEditModalOpen(true); 
-  setItemToEdit(row);
-}
+// const openEditDialog = (row) => {
+//   setIsEditModalOpen(true); 
+//   setItemToEdit(row);
+// }
 
-const handleUpdate = (updatedRow) => {
-  const formattedRow = {
-    ...updatedRow,
-    transferNumber: updatedRow.transferid,
-  }
+// const handleUpdate = (updatedRow) => {
+//   const formattedRow = {
+//     ...updatedRow,
+//     transferNumber: updatedRow.transferid,
+//   }
 
-  setData(prev => prev.map(item => item.transferNumber === formattedRow.transferNumber ? formattedRow : item));
-  setIsEditModalOpen(false);
-  setItemToEdit(null);
-}
+//   setData(prev => prev.map(item => item.transferNumber === formattedRow.transferNumber ? formattedRow : item));
+//   setIsEditModalOpen(false);
+//   setItemToEdit(null);
+// }
 
   // Column Definitions
 
@@ -102,19 +138,19 @@ const finalData = filteredData.slice(0, pageSize);
   return (
     <div className='page-container flex flex-col gap-6 animate-in fade-in duration-500'>
 
-      <CreateTransferModal
+      {/* <CreateTransferModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)} 
-      />
+      /> */}
 
-      <DynamicEditModal
+      {/* <DynamicEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         initialData={itemToEdit}
         fields={transferFields}
         onSave={handleUpdate}
         title={itemToEdit ? `Edit Transfer #${itemToEdit.transferid}` : "Edit Transfer"}
-      />
+      /> */}
       
       {/* 1. Heading Section */}
       <HeadingAndDescription
@@ -137,7 +173,7 @@ const finalData = filteredData.slice(0, pageSize);
           placeholder="Search Transfer ID or Warehouse"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          onAddClick={() => setIsModalOpen(true)}
+          onAddClick={handleAddRedirect}
           pageSize={pageSize}
           setPageSize={setPageSize}
           addBtnText="Create Transfer"
@@ -148,7 +184,7 @@ const finalData = filteredData.slice(0, pageSize);
             columns={columns} 
             data={finalData} 
             rowConfig={rowConfig}
-            onEdit={openEditDialog}
+            onEdit={handleEditRedirect}
             onDelete={openDeleteDialog}
           />
         
