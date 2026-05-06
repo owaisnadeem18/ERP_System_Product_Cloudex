@@ -10,15 +10,15 @@ import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import HeadingAndDescription from '@/components/general/HeadingAndDescription';
 import DataStatsInfo from '@/components/general/DataStatsInfo';
 import DataTableActions from '@/components/general/DataTableActions';
+import Swal from 'sweetalert2';
+import { confirmDelete } from '@/utils/confirmDelete';
 
 const ProductMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
-  const [itemToDelete, setItemToDelete] = useState(null);
   const [data, setData] = useState(productsData);
   
   const filteredData = data.filter((product) => {
@@ -34,23 +34,19 @@ const ProductMaster = () => {
 
 
   const openDeleteDialog = (row) => {
-    setItemToDelete(row);
-    setIsDeleteModalOpen(true);
+    confirmDelete({
+      item: row,
+      data,
+      setData,
+      key: "name",
+      entity: "Product"
+    })
   };
 
   const openEditDialog = (row) => {
     setItemToEdit(row)
     setIsEditModalOpen(true);
   }
-
-  const handleConfirmDelete = () => {
-    if (itemToDelete) {
-      const updatedData = data.filter((item) => item.id !== itemToDelete.id);
-      setData(updatedData);
-      setIsDeleteModalOpen(false);
-      setItemToDelete(null);
-    }
-  };
 
   const handleUpdateProduct = (updatedRow) => {
   const formattedRow = {
@@ -100,13 +96,6 @@ const rowConfig = {
       <ProductModal
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
-      />
-
-      <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        itemName={itemToDelete?.name || "this item"}
       />
 
       <DynamicEditModal

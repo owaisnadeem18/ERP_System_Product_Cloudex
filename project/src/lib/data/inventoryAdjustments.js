@@ -1,5 +1,6 @@
 export const inventoryAdjustments = [
   {
+    id: "ADJ-2026-001",  
     adjustmentId: "ADJ-2026-001",
     warehouse: { id: "w1", name: "Main Warehouse (Karachi)" },
     product: { id: "p101", name: "Laptop Dell XPS" },
@@ -11,6 +12,7 @@ export const inventoryAdjustments = [
     adjustmentDate: "2026-05-01T10:00:00Z",
   },
   {
+    id: "ADJ-2026-002",   
     adjustmentId: "ADJ-2026-002",
     warehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
     product: { id: "p205", name: "Wireless Mouse" },
@@ -22,6 +24,7 @@ export const inventoryAdjustments = [
     adjustmentDate: "2026-05-03T15:30:00Z",
   },
   {
+    id: "ADJ-2026-003",   // ✅
     adjustmentId: "ADJ-2026-003",
     warehouse: { id: "w1", name: "Main Warehouse (Karachi)" },
     product: { id: "p310", name: "LED Monitor 24\"" },
@@ -33,6 +36,7 @@ export const inventoryAdjustments = [
     adjustmentDate: "2026-05-04T09:45:00Z",
   },
   {
+    id: "ADJ-2026-004",   
     adjustmentId: "ADJ-2026-004",
     warehouse: { id: "w3", name: "Islamabad Depot" },
     product: { id: "p401", name: "Keyboard Mechanical" },
@@ -44,6 +48,7 @@ export const inventoryAdjustments = [
     adjustmentDate: "2026-04-28T11:20:00Z",
   },
   {
+    id: "ADJ-2026-005",   
     adjustmentId: "ADJ-2026-005",
     warehouse: { id: "w2", name: "Sub-Branch (Lahore)" },
     product: { id: "p105", name: "USB-C Hub" },

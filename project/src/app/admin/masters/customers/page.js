@@ -5,12 +5,11 @@ import DataTable from "@/components/general/DataTable";
 import DataTableActions from "@/components/general/DataTableActions";
 import HeadingAndDescription from "@/components/general/HeadingAndDescription";
 import CustomerModal from "@/components/modal/CustomerModal";
-import DeleteConfirmModal from "@/components/modal/DeleteConfirmModal";
+import Swal from "sweetalert2";
 import DynamicEditModal from "@/components/modal/DynamicEditModal";
-import Button from "@/components/ui/Button";
 import { customerData } from "@/lib/data/customersData";
-import { Plus, Users, Search } from "lucide-react";
 import { useState } from "react";
+import { confirmDelete } from "@/utils/confirmDelete";
 
 export default function CustomerMaster() {
 
@@ -20,19 +19,20 @@ export default function CustomerMaster() {
   const [data, setData] = useState(customerData);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
-
-  const [customerToDelete, setCustomerToDelete] = useState(null);
   const [customerToEdit, setCustomerToEdit] = useState(null);
 
   // Delete Functions:
 
   const openDeleteDialog = (row) => {
-    setCustomerToDelete(row)
-    setIsDeleteModalOpen(true);
-  }
+    confirmDelete({
+      item: row,
+      data,
+      setData,
+      key: "name",
+      entity: "Customer"
+    })
+};
 
   // Edit Functions:
 
@@ -41,14 +41,6 @@ export default function CustomerMaster() {
     setIsEditModalOpen(true);
   }
 
-  const handleConfirmDelete = () => {
-    if (customerToDelete) {
-      const updatedData = data.filter((c) => c.id !== customerToDelete.id);
-      setData(updatedData);
-      setIsDeleteModalOpen(false);
-      setCustomerToDelete(null);
-    }
-  };
 
   const filteredData = data.filter((customer) => {
     return (
@@ -102,13 +94,6 @@ export default function CustomerMaster() {
       <CustomerModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
-
-      <DeleteConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        itemName={customerToDelete?.name || "this customer"}
       />
 
       <DynamicEditModal

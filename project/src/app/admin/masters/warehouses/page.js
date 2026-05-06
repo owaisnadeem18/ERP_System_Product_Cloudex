@@ -2,25 +2,24 @@
 
 import React, { useState } from 'react'
 import { Package, Search, Plus, MapPin, Warehouse, UserCheck } from 'lucide-react'
-import Button from '@/components/ui/Button';
+
 import DataTable from '@/components/general/DataTable';
 import HeadingAndDescription from '@/components/general/HeadingAndDescription';
 import WarehouseModal from '@/components/modal/WarehouseModal';
-import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 import { warehouseData } from '@/lib/data/warehouseData';
 import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import DataTableActions from '@/components/general/DataTableActions';
+import Swal from 'sweetalert2';
+import { confirmDelete } from '@/utils/confirmDelete';
 
 const WarehouseMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
   const [data , setData] = useState(warehouseData);
   const [isModalOpen , setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen , setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen , setIsEditModalOpen] = useState(false);
-  
-  const [warehouseToDelete , setWarehouseToDelete] = useState(null);
-  const [itemToEdit, setItemToEdit] = useState(null);
+
+  const [itemToEdit , setItemToEdit] = useState(null);
   
   const columns = ["ID", "NAME", "LOCATION", "MANAGER", "STATUS"]
 
@@ -75,26 +74,20 @@ const WarehouseMaster = () => {
   ];
 
   const openDeleteDialog = (row) => {
-    setIsDeleteModalOpen(true)
-    setWarehouseToDelete(row)
-  }
+    confirmDelete({
+      item: row,
+      data,
+      setData,
+      key: "name",
+      entity: "Warehouse"
+    });
+  };
 
   const openEditDialog = (row) => {
   setItemToEdit(row); 
   setIsEditModalOpen(true);
 };
 
-  const handleConfirmDelete = (row) => {
-
-    if (warehouseToDelete) {
-      const updatedData = data.filter((w) => w.id !== warehouseToDelete.id )
-      setData(updatedData);
-      setIsDeleteModalOpen(false);
-      setWarehouseToDelete(null);
-
-    }
-
-  }
 
   const handleUpdateWarehouse = (updatedRow) => {
   const updatedData = data.map((w) => (w.id === updatedRow.id ? updatedRow : w));
@@ -116,7 +109,6 @@ const finalData = filteredData.slice(0, pageSize);
       
       <WarehouseModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-      <DeleteConfirmModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleConfirmDelete} itemName={warehouseToDelete?.name} />
 
       <DynamicEditModal 
       title="Edit Warehouse Info"

@@ -8,6 +8,7 @@ import CreateAdjustmentModal from '@/components/modal/CreateAdjustmentModal'
 import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
 import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import { inventoryAdjustments } from '@/lib/data/inventoryAdjustments';
+import { confirmDelete } from '@/utils/confirmDelete';
 import React, { useState } from 'react'
 
 const page = () => {
@@ -17,28 +18,23 @@ const page = () => {
   const [pageSize, setPageSize] = useState(5);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState(null);
   const [itemToEdit, setItemToEdit] = useState(null);
 
-  const openDeleteDialog = (item) => {
-    setItemToDelete(item);
-    setIsDeleteModalOpen(true);
-  }
+  const openDeleteDialog = (row) => {
+    confirmDelete({
+      item: row ,
+      data,
+      setData,
+      key: "adjustmentId",
+      entity: "Adjustment"
+    });
 
-  const handleConfirmDelete = () => {
-    
-    if (itemToDelete) {
-      const updatedData = data.filter((d) => d.adjustmentId !== itemToDelete.adjustmentId);
-      setData(updatedData);
-      console.log("Deleting item:", itemToDelete);
-      setIsDeleteModalOpen(false);
-    }
-  }
+    console.log("Delete clicked for:", row);
+  };
 
-    const openEditDialog = (item) => {
-      console.log("EDIT ITEM:", item); // 👈 DEBUG
+  const openEditDialog = (item) => {
+
   setItemToEdit({
     ...item,
     type: item.type 
@@ -123,13 +119,6 @@ const columns = [
           <CreateAdjustmentModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)} 
-          />
-    
-          <DeleteConfirmModal
-            isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
-            onConfirm={handleConfirmDelete}
-            itemName={itemToDelete?.adjustmentId || ""}
           />
     
           <DynamicEditModal
