@@ -3,34 +3,56 @@
 import DataStatsInfo from '@/components/general/DataStatsInfo'
 import DataTableActions from '@/components/general/DataTableActions'
 import HeadingAndDescription from '@/components/general/HeadingAndDescription'
-import CreateGRNModal from '@/components/modal/CreateGrnModal'
+// import CreateGRNModal from '@/components/modal/CreateGrnModal'
 import DataTable from '@/components/general/DataTable'
-import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
-import DynamicEditModal from '@/components/modal/DynamicEditModal'
+// import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal'
+// import DynamicEditModal from '@/components/modal/DynamicEditModal'
 import { grnData } from '@/lib/data/grnData'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { confirmDelete } from '@/utils/confirmDelete'
+import { useRouter } from 'next/navigation'
 
 const page = () => {
+
+  const router = useRouter()
 
   const [data, setData] = useState(grnData)
   const [searchQuery, setSearchQuery] = useState("")
   const [pageSize, setPageSize] = useState(5)
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  // const [isModalOpen, setIsModalOpen] = useState(false)
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  const [itemToEdit, setItemToEdit] = useState(null)
+  // const [itemToEdit, setItemToEdit] = useState(null)
+
+  
+    useEffect(() => {
+      const savedData = localStorage.getItem('inventoryGrns'); 
+    
+    if (savedData) {
+      const parsedLocal = JSON.parse(savedData);
+      
+      const combinedData = [
+        ...parsedLocal,
+        ...grnData.filter(mockItem => 
+          !parsedLocal.some(localItem => localItem.id === mockItem.id)
+        )
+      ];
+      
+      setData(combinedData);
+    }
+  }, []);
 
   const formattedData = data.map(item => ({
-    id: item.grnId,
-    grnId: item.grnId,
-    supplier: item.supplier,
-    warehouse: item.warehouse?.name,
-    items: item.items.length,
-    status: item.status,
-    date: new Date(item.grnDate).toLocaleDateString(),
-  }))
+  id: item.grnId || item.id,
+  grnId: item.grnId,
+  supplier: item.supplier,
+  warehouse: item.warehouse?.name || item.warehouse, // Handle both object and string
+  // Check if it's an array (mock) or a number (form)
+  items: Array.isArray(item.items) ? item.items.length : (item.itemsCount || 0),
+  status: item.status,
+  date: new Date(item.grnDate || item.date).toLocaleDateString(),
+}))
 
   const filteredData = formattedData.filter(item =>
     (item.grnId || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -64,21 +86,29 @@ const openDeleteDialog = (row) => {
   });
 };
 
-  const openEditDialog = (row) => {
-    const original = data.find(d => d.grnId === row.grnId)
-    setItemToEdit(original)
-    setIsEditModalOpen(true)
-  }
+const handleAddRedirect = () => {
+  router.push("/admin/inventory/grns/add");
+}
 
-  const handleUpdate = (updatedItem) => {
-    setData(prev =>
-      prev.map(item =>
-        item.grnId === updatedItem.grnId ? updatedItem : item
-      )
-    )
-    setIsEditModalOpen(false)
-    setItemToEdit(null)
-  }
+const handleEditRedirect = (row) => {
+  router.push(`/admin/inventory/grns/edit/${row.id}`);
+}
+
+  // const openEditDialog = (row) => {
+  //   const original = data.find(d => d.grnId === row.grnId)
+  //   setItemToEdit(original)
+  //   setIsEditModalOpen(true)
+  // }
+
+  // const handleUpdate = (updatedItem) => {
+  //   setData(prev =>
+  //     prev.map(item =>
+  //       item.grnId === updatedItem.grnId ? updatedItem : item
+  //     )
+  //   )
+  //   setIsEditModalOpen(false)
+  //   setItemToEdit(null)
+  // }
 
   const grnFields = [
     { name: "supplier", label: "Supplier" },
@@ -93,20 +123,20 @@ const openDeleteDialog = (row) => {
     <div className='page-container flex flex-col gap-6 animate-in fade-in duration-500'>
 
       {/* Create Modal */}
-      <CreateGRNModal
+      {/* <CreateGRNModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-      />
+      /> */}
 
       {/* Edit Modal */}
-      <DynamicEditModal
+      {/* <DynamicEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
         initialData={itemToEdit}
         fields={grnFields}
         onSave={handleUpdate}
         title={itemToEdit ? `Edit GRN #${itemToEdit.grnId}` : "Edit GRN"}
-      />
+      /> */}
 
       {/* Heading */}
       <HeadingAndDescription
@@ -129,7 +159,7 @@ const openDeleteDialog = (row) => {
           placeholder="Search GRN ID or Supplier"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          onAddClick={() => setIsModalOpen(true)}
+          onAddClick={handleAddRedirect}
           pageSize={pageSize}
           setPageSize={setPageSize}
           addBtnText="Create GRN"
@@ -140,7 +170,7 @@ const openDeleteDialog = (row) => {
           columns={columns}
           data={finalData}
           rowConfig={rowConfig}
-          onEdit={openEditDialog}
+          onEdit={handleEditRedirect}
           onDelete={openDeleteDialog}
         />
 

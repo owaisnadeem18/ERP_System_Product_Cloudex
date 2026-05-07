@@ -36,4 +36,12 @@ export const navLinks = [
         { name: 'Incoming Payments', href: '/admin/finance/payments' },
       ]
     },
+    { 
+      name: 'Configuration', 
+      href: '#',
+      subLinks: [
+        { name: 'Tenant Configuration', href: '/admin/configuration/tenant' },
+        { name: 'Branch Configuration', href: '/admin/configuration/branch' },
+      ]
+    },
   ];

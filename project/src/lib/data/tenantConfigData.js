@@ -1,0 +1,50 @@
+export const tenantData = [
+  {
+    id: "TEN-001",
+    code: "TNT-ALPHA",
+    name: "Alpha Systems Pvt Ltd",
+    contact: "021-3245678",
+    location: "Main Boulevard, Gulberg, Lahore",
+    url: "https://alpha.erp-cloud.com",
+    status: 1,
+    isDeleted: 0,
+    createdAt: "2026-01-01T10:00:00Z",
+    createdBy: "System Admin",
+    modifiedAt: "2026-03-10T14:20:00Z",
+    modifiedBy: "Super User",
+    deletedAt: null,
+    deletedBy: null
+  },
+  {
+    id: "TEN-002",
+    code: "TNT-BETA",
+    name: "Beta Logistics",
+    contact: "051-8899001",
+    location: "Sector F-7, Islamabad",
+    url: "https://beta-logistics.erp-cloud.com",
+    status: 1,
+    isDeleted: 0,
+    createdAt: "2026-02-15T09:30:00Z",
+    createdBy: "System Admin",
+    modifiedAt: null,
+    modifiedBy: null,
+    deletedAt: null,
+    deletedBy: null
+  },
+  {
+    id: "TEN-003",
+    code: "TNT-GAMMA",
+    name: "Gamma Retailers",
+    contact: "021-9988776",
+    location: "DHA Phase 6, Karachi",
+    url: "https://gamma-retail.erp-cloud.com",
+    status: 0,
+    isDeleted: 0,
+    createdAt: "2026-04-20T11:45:00Z",
+    createdBy: "Admin User",
+    modifiedAt: "2026-05-01T16:00:00Z",
+    modifiedBy: "Admin User",
+    deletedAt: null,
+    deletedBy: null
+  }
+];

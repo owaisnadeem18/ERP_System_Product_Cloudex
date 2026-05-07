@@ -4,22 +4,42 @@ import DataStatsInfo from '@/components/general/DataStatsInfo';
 import DataTable from '@/components/general/DataTable';
 import DataTableActions from '@/components/general/DataTableActions';
 import HeadingAndDescription from '@/components/general/HeadingAndDescription';
-import CreateAdjustmentModal from '@/components/modal/CreateAdjustmentModal'
-import DeleteConfirmModal from '@/components/modal/DeleteConfirmModal';
-import DynamicEditModal from '@/components/modal/DynamicEditModal';
+// import CreateAdjustmentModal from '@/components/modal/CreateAdjustmentModal'
+
+// import DynamicEditModal from '@/components/modal/DynamicEditModal';
 import { inventoryAdjustments } from '@/lib/data/inventoryAdjustments';
 import { confirmDelete } from '@/utils/confirmDelete';
-import React, { useState } from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 
 const page = () => {
+
+  const router = useRouter();
 
   const [data, setData] = useState(inventoryAdjustments);
   const [searchQuery, setSearchQuery] = useState("");
   const [pageSize, setPageSize] = useState(5);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [itemToEdit, setItemToEdit] = useState(null);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  // const [itemToEdit, setItemToEdit] = useState(null);
+
+    useEffect(() => {
+      const savedData = localStorage.getItem('inventoryAdjustments'); 
+    
+    if (savedData) {
+      const parsedLocal = JSON.parse(savedData);
+      
+      const combinedData = [
+        ...parsedLocal,
+        ...inventoryAdjustments.filter(mockItem => 
+          !parsedLocal.some(localItem => localItem.id === mockItem.id)
+        )
+      ];
+      
+      setData(combinedData);
+    }
+  }, []);
 
   const openDeleteDialog = (row) => {
     confirmDelete({
@@ -30,29 +50,36 @@ const page = () => {
       entity: "Adjustment"
     });
 
-    console.log("Delete clicked for:", row);
   };
 
-  const openEditDialog = (item) => {
+//   const openEditDialog = (item) => {
 
-  setItemToEdit({
-    ...item,
-    type: item.type 
-  });
-  setIsEditModalOpen(true);
+//   setItemToEdit({
+//     ...item,
+//     type: item.type 
+//   });
+//   setIsEditModalOpen(true);
+// };
+
+//   const handleUpdate = (updatedItem) => {
+//     console.log("Updated item:", updatedItem);
+//     setIsEditModalOpen(false);
+//     if (updatedItem && updatedItem.adjustmentId) {
+//       const updatedData = data.map((d) =>
+//         d.adjustmentId === updatedItem.adjustmentId ? { ...d, ...updatedItem } : d
+//       );
+//       setData(updatedData);
+//     }
+
+//   }
+
+const handleAddRedirect = () => {
+  router.push("/admin/inventory/adjustments/add");
+}
+
+const handleEditRedirect = (row) => {
+  router.push(`/admin/inventory/adjustments/edit/${row.adjustmentId}`);
 };
-
-  const handleUpdate = (updatedItem) => {
-    console.log("Updated item:", updatedItem);
-    setIsEditModalOpen(false);
-    if (updatedItem && updatedItem.adjustmentId) {
-      const updatedData = data.map((d) =>
-        d.adjustmentId === updatedItem.adjustmentId ? { ...d, ...updatedItem } : d
-      );
-      setData(updatedData);
-    }
-
-  }
 
 const formattedData = data.map(item => ({
   id: item.id ,
@@ -117,7 +144,7 @@ const columns = [
   return (
     <div className='page-container flex flex-col gap-6 animate-in fade-in duration-500'>
     
-          <CreateAdjustmentModal
+          {/* <CreateAdjustmentModal
             isOpen={isModalOpen}
             onClose={() => setIsModalOpen(false)} 
           />
@@ -129,7 +156,7 @@ const columns = [
             fields={adjustmentFields}
             onSave={handleUpdate}
             title={itemToEdit ? `Edit Adjustment #${itemToEdit.adjustmentId}` : "Edit Adjustment"}
-          />
+          /> */}
           
           {/* 1. Heading Section */}
           <HeadingAndDescription
@@ -152,7 +179,7 @@ const columns = [
               placeholder="Search Adjustment ID or Warehouse"
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
-              onAddClick={() => setIsModalOpen(true)}
+              onAddClick={handleAddRedirect}
               pageSize={pageSize}
               setPageSize={setPageSize}
               addBtnText="Create Adjustment"
@@ -163,7 +190,7 @@ const columns = [
                 columns={columns} 
                 data={finalData} 
                 rowConfig={rowConfig}
-                onEdit={openEditDialog}
+                onEdit={handleEditRedirect}
                 onDelete={openDeleteDialog}
               />
             

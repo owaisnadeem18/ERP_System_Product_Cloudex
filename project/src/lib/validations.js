@@ -108,3 +108,49 @@ export const transferSchema = yup.object().shape({
     .min(1, "Quantity must be at least 1"),
   remarks: yup.string().nullable(),
 });
+
+export const adjustmentSchema = yup.object().shape({
+  warehouse: yup.string().required("Warehouse is required"),
+  product: yup.string().required("Product name is required"),
+  type: yup.string().oneOf(["Addition", "Subtraction"], "Invalid type").required("Adjustment type is required"),
+  quantity: yup.number()
+    .typeError("Quantity must be a number")
+    .positive("Quantity must be greater than 0")
+    .required("Quantity is required"),
+  reason: yup.string().required("Please provide a reason for adjustment"),
+  status: yup.string().required("Status is required"),
+});
+
+export const grnSchema = yup.object().shape({
+  supplier: yup.string().required("Supplier name is required"),
+  warehouse: yup.string().required("Warehouse is required"),
+  itemsCount: yup.number()
+    .typeError("Items count must be a number")
+    .min(1, "At least 1 item must be received")
+    .required("Number of items is required"),
+  status: yup.string().required("Status is required"),
+  date: yup.date().typeError("Valid date is required").required("Date is required"),
+});
+
+export const tenantSchema = yup.object().shape({
+  code: yup.string().required("Tenant code is required"),
+  name: yup.string().required("Tenant name is required"),
+  contact: yup.string().required("Contact number is required"),
+  location: yup.string().required("Physical location is required"),
+  url: yup.string().url("Invalid URL format").required("Tenant URL is required"),
+  status: yup.number().oneOf([0, 1]).default(1),
+  isTaxApplicable: yup.boolean().default(false),
+  taxNumber: yup.string().when("isTaxApplicable", {
+    is: true,
+    then: (schema) => schema.required("Tax Number is required when tax is applicable"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+});
+export const branchSchema = yup.object().shape({
+  code: yup.string().required("Branch code is required"),
+  name: yup.string().required("Branch name is required"),
+  contact: yup.string().required("Contact number is required"),
+  location: yup.string().required("Location is required"),
+  url: yup.string().url("Must be a valid URL").required("URL is required"),
+  status: yup.number().oneOf([0, 1]).default(1),
+});

@@ -31,7 +31,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1 h-full">
+          <div className="hidden lg:flex items-center gap-0 h-full">
             {navLinks.map((link) => {
               const isActive = checkActive(link);
               return (
