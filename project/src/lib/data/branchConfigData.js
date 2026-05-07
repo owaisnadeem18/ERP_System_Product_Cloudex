@@ -1,9 +1,13 @@
 export const branchData = [
   {
-    id: "br-001",
+    id: "BR-10129",
+    tenantId: "TEN-001", // Link to Alpha Systems
+    tenantName: "Alpha Systems Pvt Ltd", 
     code: "KHI-01",
     name: "Karachi Corporate Office",
+    manager: "Zubair Ahmed",
     contact: "+92-21-3456789",
+    city: "Karachi",
     location: "I.I Chundrigar Road, Karachi",
     url: "https://khi-branch.erp.com",
     status: 1,
@@ -16,10 +20,14 @@ export const branchData = [
     deletedBy: null
   },
   {
-    id: "br-002",
+    id: "BR-20331",
+    tenantId: "TEN-002", // Link to Beta Logistics
+    tenantName: "Beta Logistics",
     code: "LHR-05",
     name: "Lahore Distribution Hub",
+    manager: "M. Irfan",
     contact: "+92-42-9876543",
+    city: "Lahore",
     location: "Gulberg III, Lahore",
     url: "https://lhr-branch.erp.com",
     status: 1,
@@ -32,10 +40,14 @@ export const branchData = [
     deletedBy: null
   },
   {
-    id: "br-003",
+    id: "BR-30992",
+    tenantId: "TEN-001", // Alpha Systems again, different branch
+    tenantName: "Alpha Systems Pvt Ltd",
     code: "ISL-02",
     name: "Islamabad Regional Branch",
+    manager: "Sana Khan",
     contact: "+92-51-1122334",
+    city: "Islamabad",
     location: "Blue Area, Islamabad",
     url: "https://isl-branch.erp.com",
     status: 0,
