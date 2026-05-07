@@ -146,11 +146,20 @@ export const tenantSchema = yup.object().shape({
     otherwise: (schema) => schema.notRequired(),
   }),
 });
+
 export const branchSchema = yup.object().shape({
-  code: yup.string().required("Branch code is required"),
+  tenantId: yup.string().required("Please select a Tenant"),
   name: yup.string().required("Branch name is required"),
+  code: yup.string().required("Branch code is required"),
+  manager: yup.string().required("Branch manager name is required"),
   contact: yup.string().required("Contact number is required"),
-  location: yup.string().required("Location is required"),
-  url: yup.string().url("Must be a valid URL").required("URL is required"),
-  status: yup.number().oneOf([0, 1]).default(1),
+  city: yup.string().required("City is required"),
+  location: yup.string().required("Physical address is required"),
+  status: yup.number().default(1),
+  isTaxApplicable: yup.boolean().default(false),
+  taxNumber: yup.string().when("isTaxApplicable", {
+    is: true,
+    then: (schema) => schema.required("Tax/NTN Number is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });

@@ -6,7 +6,7 @@ import { tenantData } from '@/lib/data/tenantConfigData';
 
 const AddBranchPage = () => {
   const router = useRouter();
-  const [tenants, setTenants] = useState([]);
+  const [tenants, setTenants] = useState(tenantData);
 
   // Load Tenants to pass to the form dropdown
   useEffect(() => {
@@ -49,7 +49,7 @@ const AddBranchPage = () => {
 
       <div className="mt-4">
         {/* We pass the tenants list so the form can show a "Select Tenant" dropdown */}
-        <BranchForm 
+        <BranchForm
           tenants={tenants}
           onSave={handleSave} 
           onCancel={() => router.back()} 
